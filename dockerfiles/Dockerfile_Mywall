@@ -17,17 +17,20 @@ RUN a2enmod rewrite
 # Configurar el directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar todos los archivos de la aplicación primero
-COPY . .
+# Copiar solo los archivos necesarios para la instalación de Composer (mejora la caché de Docker)
+COPY composer.json composer.lock ./
 
-# Asignar permisos de lectura, escritura y ejecución a todos los archivos y directorios en /var/www/html
-RUN chmod -R 755 /var/www/html
-
-# Instalar Composer
+# Instalar Composer (debe estar disponible en el contenedor)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Instalar dependencias y optimizar autoloader
+# Instalar las dependencias de Composer
 RUN composer install --no-dev --optimize-autoloader
+
+# Copiar el resto de los archivos de la aplicación
+COPY . .
+
+# Asignar los permisos correctos a los archivos
+RUN chown -R www-data:www-data /var/www/html
 
 # Exponer el puerto 80
 EXPOSE 80
