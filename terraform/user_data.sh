@@ -9,7 +9,7 @@ sudo dnf install -y git
 cd /var
 sudo git clone https://github.com/ferminromero00/EKS-SYMFONY.git
 
-# Crear directorio y mover archivos
+# Crear directorio y copiar archivos
 sudo mkdir -p /var/mywall
 sudo cp -r EKS-SYMFONY/dockerfiles/Dockerfile_Mywall /var/mywall/
 sudo cp -r EKS-SYMFONY/Mywall/* /var/mywall/
