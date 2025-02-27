@@ -19,7 +19,7 @@ sudo systemctl enable docker
 
 # Construir la imagen
 cd /var/EKS-SYMFONY/MyWall
-# sudo docker build -t mywall_symfony -f Dockerfile_Mywall .
+sudo docker build -t mywall_symfony -f Dockerfile_Mywall .
 
 # Ejecutar el contenedor con variables de entorno
 sudo docker run -d -p 80:80 -e APP_ENV=prod -e APP_DEBUG=0 --name mywall_container mywall_symfony
