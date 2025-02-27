@@ -14,15 +14,19 @@ RUN apt-get update && apt-get install -y \
     curl \
     && docker-php-ext-install intl pdo pdo_mysql opcache
 
+# Configurar Apache
 RUN a2enmod rewrite
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Crear directorios necesarios
+# Crear directorios necesarios y establecer permisos
 RUN mkdir -p var/cache var/log \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
     && chmod -R 777 var
 
 # Copiar archivos de composer primero
@@ -38,6 +42,7 @@ RUN composer install \
 
 # Copiar el resto de la aplicación
 COPY . .
+RUN chown -R www-data:www-data .
 
 # Generar autoloader y limpiar caché
 RUN composer dump-autoload --optimize \
