@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
+    nodejs \
+    npm \
     && docker-php-ext-install intl pdo pdo_mysql opcache \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -46,16 +48,16 @@ WORKDIR /var/www/html
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Crear directorios necesarios y establecer permisos iniciales
-RUN mkdir -p var/cache var/log \
-    && chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 777 var
+# Crear directorios necesarios
+RUN mkdir -p var/cache var/log public/build \
+    && chmod -R 777 var \
+    && chmod -R 755 public
 
-# Copiar archivos de composer primero para aprovechar la caché
+# Copiar archivos de composer primero
 COPY composer.* ./
+COPY package.json package-lock.json ./
 
-# Instalar dependencias en modo producción
+# Instalar dependencias
 RUN composer install \
     --prefer-dist \
     --no-dev \
@@ -67,10 +69,11 @@ RUN composer install \
 COPY . .
 
 # Configurar permisos finales y optimizar
-RUN chown -R www-data:www-data . \
-    && composer dump-autoload --optimize \
+RUN composer dump-autoload --optimize \
     && php bin/console cache:clear --env=prod --no-debug \
-    && chown -R www-data:www-data var
+    && php bin/console importmap:install \
+    && php bin/console assets:install \
+    && chown -R www-data:www-data .
 
 # Exponer puerto
 EXPOSE 80
