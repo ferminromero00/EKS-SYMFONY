@@ -1,0 +1,45 @@
+security:
+  password_hashers:
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
+
+  providers:
+    app_user_provider:
+      entity:
+        class: App\Entity\Usuario
+        property: username
+
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+
+    main:
+      lazy: true
+      provider: app_user_provider
+      entry_point: jwt # Para manejar la autenticación mediante JWT
+
+      # Autenticación mediante json_login para obtener el token
+      json_login:
+        check_path: /api/login
+        username_path: username
+        password_path: password
+        success_handler: App\Security\JwtSuccessHandler
+
+      form_login:
+        login_path: app_login
+        check_path: app_login
+        enable_csrf: true
+        default_target_path: app_muro
+
+      # Configuración de JWT
+      jwt:
+
+      # Configuración de logout
+      logout:
+        path: /logout
+        target: /
+
+  # Control de acceso a las rutas
+  access_control:
+    - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api, roles: ROLE_USER }

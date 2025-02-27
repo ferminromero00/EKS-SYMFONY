@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MyWall - Muro
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-4">
+		{% if app.user %}
+			{% if app.user %}
+				<a href="{{ path('app_logout') }}" class="btn btn-outline-danger mb-4">Cerrar Sesión</a>
+			{% endif %}
+
+			<div class="dropdown">
+				<button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					Ver otros muros
+				</button>
+				<ul class="dropdown-menu dropdown-menu-end">
+					{% for usuario in usuarios %}
+						{% if usuario.id != app.user.id %}
+							<li>
+								<a class="dropdown-item" href="{{ path('app_muro_usuario', {'id': usuario.id}) }}">
+									{{ usuario.username }}
+								</a>
+							</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+
+			<h2 class="text-center mb-4">Bienvenido a tu muro,
+				{{ app.user.username }}!</h2>
+			<!-- Formulario para escribir una publicación -->
+			<div class="card shadow-sm mb-4">
+				<div class="card-body">
+					<h5 class="card-title">Escribe tu publicación</h5>
+					<form method="post" action="{{ path('app_publicar') }}">
+						<div class="mb-3">
+							<textarea class="form-control" name="contenido" rows="3" placeholder="¿Qué estás pensando?" required></textarea>
+						</div>
+						<button type="submit" class="btn btn-primary">Publicar</button>
+					</form>
+				</div>
+			</div>
+
+			<!-- Sección para mostrar publicaciones -->
+			<div class="card shadow-sm">
+				<div class="card-body">
+					<h5 class="card-title">Publicaciones recientes</h5>
+					{% for publicacion in publicaciones %}
+						<!-- Bloque para cada publicación con más separación -->
+						<div class="mb-5 border rounded p-4 bg-light shadow-lg">
+							<div class="d-flex justify-content-between">
+								<strong>{{ publicacion.usuario.username }}</strong>
+								PUBLICACION
+								<small class="text-muted">{{ publicacion.fechaCreacion|date('d/m/Y H:i') }}</small>
+							</div>
+							<p>{{ publicacion.contenido }}</p>
+
+							<!-- Formulario de comentarios -->
+							<form method="post" action="{{ path('app_comentar_publicacion', {'id': publicacion.id}) }}">
+								<div class="mt-3">
+									<textarea class="form-control" name="contenido_comentario" rows="2" placeholder="Escribe un comentario..." required></textarea>
+								</div>
+								<button type="submit" class="btn btn-secondary mt-2">Contestar</button>
+							</form>
+
+							<!-- Botón para eliminar publicación (solo si el usuario es el propietario) -->
+							{% if publicacion.usuario == app.user %}
+								<form method="post" action="{{ path('app_eliminar_publicacion', {'id': publicacion.id}) }}" class="mt-2">
+									<button type="submit" class="btn btn-danger">Eliminar publicación</button>
+								</form>
+							{% endif %}
+
+							<!-- Mostrar los comentarios debajo de la publicación -->
+							<div class="mt-3">
+								{% for comentario in publicacion.comentarios %}
+    <div class="border-top pt-2 mt-2" style="margin-left: 20px;">
+        <strong>{{ comentario.usuario.username }}</strong>
+        ha comentado:
+        <p>{{ comentario.contenido }}</p>
+        <small class="text-muted">{{ comentario.fechaCreacion|date('d/m/Y H:i') }}</small>
+
+        <!-- Formulario para eliminar comentario (solo si el usuario es el propietario) -->
+        {% if comentario.usuario == app.user %}
+            <form method="post" action="{{ path('app_eliminar_comentario', {'id': comentario.id}) }}" class="mt-2">
+                <button type="submit" class="btn btn-danger">Eliminar comentario</button>
+            </form>
+        {% endif %}
+
+        <!-- Formulario para responder a un comentario -->
+        <form method="post" action="{{ path('app_responder_comentario', {'id': comentario.id}) }}" class="mt-2">
+            <div class="mt-2">
+                <textarea class="form-control" name="contenido_comentario" rows="2" placeholder="Responde a este comentario..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-secondary mt-2">Responder</button>
+        </form>
+
+        <!-- Respuestas anidadas -->
+        <div class="mt-3" style="margin-left: 40px;">
+            {% for respuesta in comentario.comentarios %}
+                <div class="border-top pt-2 mt-2">
+                    <strong>{{ respuesta.usuario.username }}</strong>
+                    ha respondido:
+                    <p>{{ respuesta.contenido }}</p>
+                    <small class="text-muted">{{ respuesta.fechaCreacion|date('d/m/Y H:i') }}</small>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+							</div>
+						</div>
+					{% else %}
+						<p class="text-muted">No hay publicaciones aún.</p>
+					{% endfor %}
+				</div>
+			</div>
+		{% else %}
+			<script>
+				window.location.href = "{{ path('app_login') }}";
+			</script>
+		{% endif %}
+	</div>
+{% endblock %}
