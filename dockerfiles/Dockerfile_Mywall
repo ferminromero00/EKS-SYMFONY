@@ -13,14 +13,14 @@ RUN a2enmod rewrite
 WORKDIR /var/www/html
 
 # Copiar los archivos de la aplicación al contenedor
-COPY ../EKS-SYMFONY/Mywall . 
+COPY Mywall .  
 
 # Instalar Composer y dependencias de Symfony
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Asignar permisos
-RUN chown -R www-data:www-data /var/www/html/var
+# Asignar permisos correctos
+RUN chown -R www-data:www-data /var/www/html/var /var/www/html/storage
 
 # Exponer el puerto 80
 EXPOSE 80

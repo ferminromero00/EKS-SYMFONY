@@ -2,23 +2,26 @@
 # Actualizar el sistema
 sudo yum update -y
 
-# Clonar para conseguir el dockerfile
+# Instalar Git
 sudo dnf install -y git
 
+# Clonar el repositorio
 cd /var
-mkdir mywall
 sudo git clone https://github.com/ferminromero00/EKS-SYMFONY.git
 
-# Mover archivos necesarios
-sudo mv EKS-SYMFONY/dockerfiles/Dockerfile_Mywall mywall
+# Crear directorio y mover archivos
+mkdir -p mywall
+sudo mv EKS-SYMFONY/dockerfiles/Dockerfile_Mywall mywall/
+sudo mv EKS-SYMFONY/Mywall mywall/
 
-# Instalar docker
-sudo dnf install docker -y
+# Instalar Docker
+sudo dnf install -y docker
 sudo systemctl start docker
+sudo systemctl enable docker
 
-# Contruimos imagen
+# Construir la imagen
 cd /var/mywall
 sudo docker build -t mywall_symfony -f Dockerfile_Mywall .
 
-# Ejecutamos la imagen
-sudo docker run -d -p 80:80 mywall-symfony
+# Ejecutar el contenedor en segundo plano
+sudo docker run -d -p 80:80 --name mywall_container mywall_symfony
