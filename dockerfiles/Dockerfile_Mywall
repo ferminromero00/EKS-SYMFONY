@@ -1,7 +1,10 @@
-# Imagen base con PHP y Apache
 FROM php:8.2-apache
 
-# Instalar dependencias necesarias
+# Establecer entorno de producción
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libpq-dev \
@@ -11,29 +14,36 @@ RUN apt-get update && apt-get install -y \
     curl \
     && docker-php-ext-install intl pdo pdo_mysql opcache
 
-# Habilitar mod_rewrite para Apache
 RUN a2enmod rewrite
 
-# Configurar el directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar todos los archivos del proyecto, incluidos los necesarios para Symfony
-COPY . .
-
-# Asignar los permisos correctos a los archivos
-RUN chmod -R 755 /var/www/html
-
-# Copiar solo los archivos necesarios para la instalación de Composer (mejora la caché de Docker)
-COPY composer.json composer.lock ./
-
-# Instalar Composer (debe estar disponible en el contenedor)
+# Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Instalar las dependencias de Composer
-RUN composer install --no-dev --optimize-autoloader
+# Crear directorios necesarios
+RUN mkdir -p var/cache var/log \
+    && chmod -R 777 var
 
-# Exponer el puerto 80
+# Copiar archivos de composer primero
+COPY composer.* ./
+
+# Instalar dependencias en modo producción
+RUN composer install \
+    --prefer-dist \
+    --no-dev \
+    --no-scripts \
+    --no-progress \
+    --no-interaction
+
+# Copiar el resto de la aplicación
+COPY . .
+
+# Generar autoloader y limpiar caché
+RUN composer dump-autoload --optimize \
+    && php bin/console cache:clear --env=prod --no-debug \
+    && chown -R www-data:www-data var
+
 EXPOSE 80
 
-# Iniciar Apache
 CMD ["apache2-foreground"]
