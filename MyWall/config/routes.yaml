@@ -1,9 +1,5 @@
 controllers:
-  resource:
-    path: ../src/Controller/
-    namespace: App\Controller
-  type: attribute
-
-auth_login:
-  path: /api/login
-  methods: [GET, POST]
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute

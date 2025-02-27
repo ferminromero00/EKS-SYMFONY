@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\UsuarioRepository;
+use App\Repository\ClienteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,10 +10,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UsuarioRepository::class)]
+#[ORM\Entity(repositoryClass: ClienteRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
-class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
+class Cliente implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -36,21 +36,20 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     /**
-     * @var Collection<int, Publicacion>
+     * @var Collection<int, Pedido>
      */
-    #[ORM\OneToMany(targetEntity: Publicacion::class, mappedBy: 'usuario')]
-    private Collection $publicacions;
+    #[ORM\OneToMany(targetEntity: Pedido::class, mappedBy: 'cliente')]
+    private Collection $pedidos;
 
-    /**
-     * @var Collection<int, Comentario>
-     */
-    #[ORM\OneToMany(targetEntity: Comentario::class, mappedBy: 'usuario')]
-    private Collection $comentarios;
+    #[ORM\Column]
+    private ?bool $administrador = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $nombre_apellidos = null;
 
     public function __construct()
     {
-        $this->publicacions = new ArrayCollection();
-        $this->comentarios = new ArrayCollection();
+        $this->pedidos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -129,61 +128,55 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Publicacion>
+     * @return Collection<int, Pedido>
      */
-    public function getPublicacions(): Collection
+    public function getPedidos(): Collection
     {
-        return $this->publicacions;
+        return $this->pedidos;
     }
 
-    public function addPublicacion(Publicacion $publicacion): static
+    public function addPedido(Pedido $pedido): static
     {
-        if (!$this->publicacions->contains($publicacion)) {
-            $this->publicacions->add($publicacion);
-            $publicacion->setUsuario($this);
+        if (!$this->pedidos->contains($pedido)) {
+            $this->pedidos->add($pedido);
+            $pedido->setCliente($this);
         }
 
         return $this;
     }
 
-    public function removePublicacion(Publicacion $publicacion): static
+    public function removePedido(Pedido $pedido): static
     {
-        if ($this->publicacions->removeElement($publicacion)) {
+        if ($this->pedidos->removeElement($pedido)) {
             // set the owning side to null (unless already changed)
-            if ($publicacion->getUsuario() === $this) {
-                $publicacion->setUsuario(null);
+            if ($pedido->getCliente() === $this) {
+                $pedido->setCliente(null);
             }
         }
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Comentario>
-     */
-    public function getComentarios(): Collection
+    public function isAdministrador(): ?bool
     {
-        return $this->comentarios;
+        return $this->administrador;
     }
 
-    public function addComentario(Comentario $comentario): static
+    public function setAdministrador(bool $administrador): static
     {
-        if (!$this->comentarios->contains($comentario)) {
-            $this->comentarios->add($comentario);
-            $comentario->setUsuario($this);
-        }
+        $this->administrador = $administrador;
 
         return $this;
     }
 
-    public function removeComentario(Comentario $comentario): static
+    public function getNombreApellidos(): ?string
     {
-        if ($this->comentarios->removeElement($comentario)) {
-            // set the owning side to null (unless already changed)
-            if ($comentario->getUsuario() === $this) {
-                $comentario->setUsuario(null);
-            }
-        }
+        return $this->nombre_apellidos;
+    }
+
+    public function setNombreApellidos(string $nombre_apellidos): static
+    {
+        $this->nombre_apellidos = $nombre_apellidos;
 
         return $this;
     }

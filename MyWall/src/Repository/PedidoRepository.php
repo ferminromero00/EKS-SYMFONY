@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Publicacion;
+use App\Entity\Pedido;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Publicacion>
+ * @extends ServiceEntityRepository<Pedido>
  */
-class PublicacionRepository extends ServiceEntityRepository
+class PedidoRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Publicacion::class);
+        parent::__construct($registry, Pedido::class);
     }
 
     //    /**
-    //     * @return Publicacion[] Returns an array of Publicacion objects
+    //     * @return Pedido[] Returns an array of Pedido objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class PublicacionRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Publicacion
+    //    public function findOneBySomeField($value): ?Pedido
     //    {
     //        return $this->createQueryBuilder('p')
     //            ->andWhere('p.exampleField = :val')

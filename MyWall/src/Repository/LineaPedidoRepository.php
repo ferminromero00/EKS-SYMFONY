@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\Comentario;
+use App\Entity\LineaPedido;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Comentario>
+ * @extends ServiceEntityRepository<LineaPedido>
  */
-class ComentarioRepository extends ServiceEntityRepository
+class LineaPedidoRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Comentario::class);
+        parent::__construct($registry, LineaPedido::class);
     }
 
     //    /**
-    //     * @return Comentario[] Returns an array of Comentario objects
+    //     * @return LineaPedido[] Returns an array of LineaPedido objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
+    //        return $this->createQueryBuilder('l')
+    //            ->andWhere('l.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
+    //            ->orderBy('l.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Comentario
+    //    public function findOneBySomeField($value): ?LineaPedido
     //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
+    //        return $this->createQueryBuilder('l')
+    //            ->andWhere('l.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()
