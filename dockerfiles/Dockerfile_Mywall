@@ -5,6 +5,7 @@ ENV APP_ENV=prod
 ENV APP_DEBUG=0
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
+# Instalar dependencias del sistema y extensiones PHP
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libpq-dev \
@@ -12,24 +13,46 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    && docker-php-ext-install intl pdo pdo_mysql opcache
+    && docker-php-ext-install intl pdo pdo_mysql opcache \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Configurar Apache
-RUN a2enmod rewrite
-COPY apache.conf /etc/apache2/sites-available/000-default.conf
+RUN a2enmod rewrite && \
+    echo '<VirtualHost *:80> \n\
+    DocumentRoot /var/www/html/public \n\
+    DirectoryIndex index.php \n\
+    \n\
+    <Directory /var/www/html/public> \n\
+        AllowOverride None \n\
+        Order Allow,Deny \n\
+        Allow from All \n\
+        \n\
+        FallbackResource /index.php \n\
+    </Directory> \n\
+    \n\
+    <Directory /var/www/html/public/bundles> \n\
+        DirectoryIndex disabled \n\
+        FallbackResource disabled \n\
+    </Directory> \n\
+    \n\
+    ErrorLog /var/log/apache2/project_error.log \n\
+    CustomLog /var/log/apache2/project_access.log combined \n\
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
+# Configurar directorio de trabajo
 WORKDIR /var/www/html
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Crear directorios necesarios y establecer permisos
+# Crear directorios necesarios y establecer permisos iniciales
 RUN mkdir -p var/cache var/log \
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 777 var
 
-# Copiar archivos de composer primero
+# Copiar archivos de composer primero para aprovechar la caché
 COPY composer.* ./
 
 # Instalar dependencias en modo producción
@@ -42,13 +65,15 @@ RUN composer install \
 
 # Copiar el resto de la aplicación
 COPY . .
-RUN chown -R www-data:www-data .
 
-# Generar autoloader y limpiar caché
-RUN composer dump-autoload --optimize \
+# Configurar permisos finales y optimizar
+RUN chown -R www-data:www-data . \
+    && composer dump-autoload --optimize \
     && php bin/console cache:clear --env=prod --no-debug \
     && chown -R www-data:www-data var
 
+# Exponer puerto
 EXPOSE 80
 
+# Comando por defecto
 CMD ["apache2-foreground"]
