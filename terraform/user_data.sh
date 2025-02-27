@@ -18,7 +18,7 @@ sudo systemctl start docker
 
 # Contruimos imagen
 cd /var/mywall
-sudo docker build -t mywall_symfony .
+sudo docker build -t mywall_symfony -f Dockerfile_Mywall .
 
 # Ejecutamos la imagen
 sudo docker run -d -p 80:80 mywall-symfony
