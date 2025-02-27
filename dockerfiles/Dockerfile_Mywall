@@ -20,14 +20,14 @@ WORKDIR /var/www/html
 # Copiar todos los archivos de la aplicación primero
 COPY . .
 
+# Asignar permisos de lectura, escritura y ejecución a todos los archivos y directorios en /var/www/html
+RUN chmod -R 755 /var/www/html
+
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Instalar dependencias y optimizar autoloader
 RUN composer install --no-dev --optimize-autoloader
-
-# Asignar permisos correctos
-RUN chown -R www-data:www-data /var/www/html/var
 
 # Exponer el puerto 80
 EXPOSE 80
