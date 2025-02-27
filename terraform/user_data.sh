@@ -18,7 +18,6 @@ sudo systemctl start docker
 sudo systemctl enable docker
 
 # Construir la imagen
-cd /var/mywall
 # sudo docker build -t mywall_symfony -f Dockerfile_Mywall .
 
 # Ejecutar el contenedor en segundo plano
