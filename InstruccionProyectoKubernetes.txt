@@ -1,0 +1,34 @@
+Aqui os va una forma en la que podeis atacar este proyecto:
+
+1. Crear tres contenedores:
+	1. Nginx/Apache
+	2. Php-fpm
+	3. Vuestro proyecto de symfony
+
+2. Subir estos contenedores a DockerHub o ECR (DockerHub de AWS)
+	No notareis diferencia usando ninguno de los dos, 
+	para subir cosas es usar un comando, ninguno tiene perdida
+	Tirar una moneda que decida por vosotros
+
+3. Crear EKS 
+4. Crear EFS
+
+5. Subir a EFS vuestro proyecto, tomandolo desde el lugar que lo
+hayais publicado (DockerHub o ECR)
+
+6. Subir a EKS los dos contenedores (Php-fpm y Nginx/Apache), subirlos como
+deployments
+
+7. Conectar todo usando Services
+
+8. MySql, tres opciones:
+	
+	1. Usar RDS (Mysql de AWS)
+	2. Usar proveedor externo de Mysql (Filess.io) link en el grupo
+	3. Crear otro contenedor, subirlo a DockerHub o ECR, ponerlo en un
+	EFS, crear otro deployment en EKS y conectar estos dos ultimos,
+	por ultimo crear otro service que conecte php-fpm con este mysql
+
+
+PARA ALGUNA DUDA PONERLA EN EL GRUPO DIRECTAMENTE, ASÍ NO DEBO REPETIR
+LO MISMO 5 VECES... GRACIAAAAAAS <3
