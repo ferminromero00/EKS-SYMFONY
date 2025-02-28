@@ -18,5 +18,5 @@ sudo systemctl start docker
 sudo systemctl enable docker
 
 # Descargar el Mywall de Gerardo
-docker pull ferminromero00/mywall-symfony
+sudo docker pull ferminromero00/mywall-symfony
 
