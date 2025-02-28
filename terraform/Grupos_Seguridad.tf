@@ -53,32 +53,3 @@ resource "aws_security_group" "grupo_seguridad_servidor" {
     Name = "GrupoSeguridadServidor"
   }
 }
-
-resource "aws_security_group" "efs_sg" {
-  name        = "EKS-SG-EFS"
-  description = "Grupo de seguridad para EFS en el cluster EKS"
-  vpc_id      = aws_vpc.principal.id
-
-  # Regla de entrada para NFS (EFS usa el puerto 2049)
-  ingress {
-    from_port   = 2049
-    to_port     = 2049
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Acceso NFS desde cualquier origen"
-  }
-
-  # Reglas de salida (permitiendo todo el tráfico)
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Permite todo el trafico de salida"
-  }
-
-  tags = {
-    Name = "EKS-SG-EFS"
-  }
-}
-
