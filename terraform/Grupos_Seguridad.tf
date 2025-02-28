@@ -64,7 +64,7 @@ resource "aws_security_group" "efs_sg" {
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # ⚠️ Reemplaza con un rango de IPs seguro si es posible
+    cidr_blocks = ["0.0.0.0/0"]
     description = "Acceso NFS desde cualquier origen"
   }
 
@@ -74,10 +74,11 @@ resource "aws_security_group" "efs_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Permite todo el tráfico de salida"
+    description = "Permite todo el trafico de salida"
   }
 
   tags = {
     Name = "EKS-SG-EFS"
   }
 }
+
