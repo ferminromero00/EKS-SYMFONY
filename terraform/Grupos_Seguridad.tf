@@ -20,25 +20,20 @@ resource "aws_security_group" "grupo_seguridad_servidor" {
     description = "Acceso SSH desde cualquier origen"
   }
   ingress {
-    from_port   = 3000
-    to_port     = 3000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Acceso JSON-SERVER"
-  }
-  ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Acceso HTTPS desde cualquier origen"
   }
+
+  # Regla de entrada para NFS (EFS)
   ingress {
-    from_port   = 389
-    to_port     = 389
+    from_port   = 2049
+    to_port     = 2049
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Acceso LDAP desde cualquier origen"
+    description = "Acceso a EFS desde cualquier origen"
   }
   # Regla de salida para todo el trafico
   egress {
