@@ -6,6 +6,8 @@ provider "aws" {
 # VPC Principal
 resource "aws_vpc" "principal" {
   cidr_block = var.vpc_cidr
+  enable_dns_hostnames = true
+  enable_dns_support   = true
   tags = {
     Name = "VPCPrincipal"
   }
@@ -19,6 +21,16 @@ resource "aws_subnet" "subred_publica" {
   availability_zone       = "${var.region}a"
   tags = {
     Name = "SubredPublica"
+  }
+}
+
+resource "aws_subnet" "subred_publica_2" {
+  vpc_id                  = aws_vpc.principal.id
+  cidr_block              = var.public_subnet_cidr_2
+  map_public_ip_on_launch = true
+  availability_zone       = "${var.region}b"
+  tags = {
+    Name = "SubredPublica-2"
   }
 }
 
@@ -45,6 +57,11 @@ resource "aws_route_table" "tabla_rutas_publica" {
 # Asociación de la Tabla de Rutas con la Subred Publica.
 resource "aws_route_table_association" "asociacion_publica" {
   subnet_id      = aws_subnet.subred_publica.id
+  route_table_id = aws_route_table.tabla_rutas_publica.id
+}
+
+resource "aws_route_table_association" "asociacion_publica_2" {
+  subnet_id      = aws_subnet.subred_publica_2.id
   route_table_id = aws_route_table.tabla_rutas_publica.id
 }
 
