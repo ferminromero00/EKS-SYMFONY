@@ -63,9 +63,6 @@ RUN composer install \
     --no-progress \
     --no-interaction
 
-# Copiar el resto de la aplicación
-COPY . .
-
 # Optimizar y configurar permisos finales
 RUN set -e; \
     composer dump-autoload --optimize; \

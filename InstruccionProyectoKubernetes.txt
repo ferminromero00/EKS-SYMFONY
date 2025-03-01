@@ -20,15 +20,3 @@ hayais publicado (DockerHub o ECR)
 deployments
 
 7. Conectar todo usando Services
-
-8. MySql, tres opciones:
-	
-	1. Usar RDS (Mysql de AWS)
-	2. Usar proveedor externo de Mysql (Filess.io) link en el grupo
-	3. Crear otro contenedor, subirlo a DockerHub o ECR, ponerlo en un
-	EFS, crear otro deployment en EKS y conectar estos dos ultimos,
-	por ultimo crear otro service que conecte php-fpm con este mysql
-
-
-PARA ALGUNA DUDA PONERLA EN EL GRUPO DIRECTAMENTE, ASÍ NO DEBO REPETIR
-LO MISMO 5 VECES... GRACIAAAAAAS <3

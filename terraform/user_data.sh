@@ -5,6 +5,12 @@ sudo yum update -y
 # Instalar Git
 sudo dnf install -y git
 
+cd /var
+mkdir mywall
+sudo git clone https://github.com/ferminromero00/EKS-SYMFONY.git
+
+sudo mv EKS-SYMFONY/dockerfiles/Dockerfile_Mywall EKS-SYMFONY/MyWall
+
 # Instalar Docker
 sudo dnf install -y docker
 sudo systemctl start docker
