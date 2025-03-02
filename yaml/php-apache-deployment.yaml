@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-apache
+  template:
+    metadata:
+      labels:
+        app: php-apache
+    spec:
+      containers:
+      - name: php-apache
+        image: ferminromero00/mywall:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: efs-storage
+          mountPath: /var/www/html  # Se monta el EFS aquí
+      volumes:
+      - name: efs-storage
+        persistentVolumeClaim:
+          claimName: efs-pvc
+
+# kubectl apply -f php-apache-deployment.yaml

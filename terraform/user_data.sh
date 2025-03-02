@@ -26,6 +26,9 @@ curl -Lo eksctl_Linux_amd64.tar.gz https://github.com/weaveworks/eksctl/releases
 tar -xzf eksctl_Linux_amd64.tar.gz -C /tmp && rm eksctl_Linux_amd64.tar.gz
 sudo mv /tmp/eksctl /usr/local/bin
 
+#Instalamos driver necesario para EFS
+kubectl apply -k "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-1.4"
+
 # Descargar la imagen de Mywall de DockerHub
 # sudo docker pull ferminromero00/mywall
 
