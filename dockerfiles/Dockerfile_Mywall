@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-    # Copiar certificados SSL
+# Copiar certificados SSL
 COPY mywall-eks.work.gd.crt /etc/ssl/certs/
 COPY mywall-eks.work.gd.key /etc/ssl/private/
 COPY mywall-eks.work.gd.ca-bundle /etc/ssl/certs/
@@ -77,7 +77,7 @@ RUN a2enmod rewrite ssl && \
 
 # Habilitar sitio SSL
 RUN a2ensite default-ssl.conf && \
-    service apache2 reload
+    service apache2 restart
 
 # Configurar directorio de trabajo
 WORKDIR /var/www/html

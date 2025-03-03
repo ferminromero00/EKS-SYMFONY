@@ -10,7 +10,7 @@ mkdir mywall
 sudo git clone https://github.com/ferminromero00/EKS-SYMFONY.git
 
 sudo mv EKS-SYMFONY/dockerfiles/Dockerfile_Mywall EKS-SYMFONY/MyWall
-sudo mv /var/EKS-SYMFONY/Certificates/certs/* /var/EKS-SYMFONY/MyWall/
+sudo mv EKS-SYMFONY/Certificates/* EKS-SYMFONY/MyWall/
 
 # Instalar Docker
 sudo dnf install -y docker
@@ -27,6 +27,9 @@ curl -Lo eksctl_Linux_amd64.tar.gz https://github.com/weaveworks/eksctl/releases
 tar -xzf eksctl_Linux_amd64.tar.gz -C /tmp && rm eksctl_Linux_amd64.tar.gz
 sudo mv /tmp/eksctl /usr/local/bin
 
+#Actulizar IP DNS
+curl https://api.dnsexit.com/dns/ud/?apikey=I2pljh2r7G5J7ShzFLS9P3ieEVUyyC -d host=mywall-eks.work.gd
+
 # Descargar la imagen de Mywall de DockerHub
 # sudo docker pull ferminromero00/mywall
 
@@ -34,3 +37,4 @@ sudo mv /tmp/eksctl /usr/local/bin
 
 # Ejecutar el contenedor con las variables de entorno correctas
 # sudo docker run -d -p 80:80 -e APP_ENV=prod -e APP_DEBUG=0 --name mywall_container ferminromero00/mywall:latest
+# sudo docker run -d -p 80:80 -p 443:443 -e APP_ENV=prod -e APP_DEBUG=0 --name mywall_container mywall-php:latest
