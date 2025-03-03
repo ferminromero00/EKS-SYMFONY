@@ -29,5 +29,7 @@ sudo mv /tmp/eksctl /usr/local/bin
 # Descargar la imagen de Mywall de DockerHub
 # sudo docker pull ferminromero00/mywall
 
+# sudo docker build -t mywall-php -f Dockerfile_Mywall .
+
 # Ejecutar el contenedor con las variables de entorno correctas
 # sudo docker run -d -p 80:80 -e APP_ENV=prod -e APP_DEBUG=0 --name mywall_container ferminromero00/mywall:latest

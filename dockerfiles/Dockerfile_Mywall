@@ -17,6 +17,16 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+    # Copiar certificados SSL
+COPY certs/mywall-eks.work.gd.crt /etc/ssl/certs/
+COPY certs/mywall-eks.work.gd.key /etc/ssl/private/
+COPY certs/mywall-eks.work.gd.ca-bundle /etc/ssl/certs/
+
+# Establecer permisos correctos para los certificados
+RUN chmod 644 /etc/ssl/certs/mywall-eks.work.gd.crt \
+    && chmod 644 /etc/ssl/certs/mywall-eks.work.gd.ca-bundle \
+    && chmod 600 /etc/ssl/private/mywall-eks.work.gd.key
+
 # Configurar Apache
 RUN a2enmod rewrite ssl && \
     echo '<VirtualHost *:80> \n\
