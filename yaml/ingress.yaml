@@ -21,4 +21,4 @@ spec:
     - mywall-eks.work.gd
     secretName: mywall-eks-tls
 
-# kubectl apply -f ingress.yml
+# kubectl apply -f ingress.yaml
