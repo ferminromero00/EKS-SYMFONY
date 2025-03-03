@@ -18,9 +18,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
     # Copiar certificados SSL
-COPY certs/mywall-eks.work.gd.crt /etc/ssl/certs/
-COPY certs/mywall-eks.work.gd.key /etc/ssl/private/
-COPY certs/mywall-eks.work.gd.ca-bundle /etc/ssl/certs/
+COPY mywall-eks.work.gd.crt /etc/ssl/certs/
+COPY mywall-eks.work.gd.key /etc/ssl/private/
+COPY mywall-eks.work.gd.ca-bundle /etc/ssl/certs/
 
 # Establecer permisos correctos para los certificados
 RUN chmod 644 /etc/ssl/certs/mywall-eks.work.gd.crt \
