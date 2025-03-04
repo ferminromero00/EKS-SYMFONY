@@ -2,26 +2,32 @@
 FROM httpd:latest
 
 # Crear directorios necesarios
-RUN mkdir -p /usr/local/apache2/conf/ssl/
-RUN mkdir -p /var/www/html
-
-# Establecer permisos correctos
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 755 /var/www/html
+RUN mkdir -p /usr/local/apache2/conf/ssl/ && \
+    mkdir -p /var/www/html && \
+    mkdir -p /usr/local/apache2/logs && \
+    chmod 755 /usr/local/apache2/logs
 
 # Copiar los certificados SSL
 COPY mywall-eks.work.gd.crt /usr/local/apache2/conf/ssl/
 COPY mywall-eks.work.gd.key /usr/local/apache2/conf/ssl/
 COPY mywall-eks.work.gd.ca-bundle /usr/local/apache2/conf/ssl/
+COPY apache-config.conf /usr/local/apache2/conf/httpd.conf
+
+# Establecer permisos
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html && \
+    chown -R www-data:www-data /usr/local/apache2/logs
 
 # Habilitar mod_rewrite, mod_ssl y mpm_prefork_module en httpd.conf
 RUN sed -i \
     -e '/LoadModule mpm_prefork_module/s/^#//g' \
+    -e '/LoadModule unixd_module/s/^#//g' \
     -e '/LoadModule rewrite_module/s/^#//g' \
     -e '/LoadModule ssl_module/s/^#//g' \
     -e '/LoadModule proxy_module/s/^#//g' \
     -e '/LoadModule proxy_fcgi_module/s/^#//g' \
     -e '/LoadModule authz_core_module/s/^#//g' \
+    -e '/LoadModule socache_shmcb_module/s/^#//g' \
     -e '/LoadModule authz_host_module/s/^#//g' \
     -e '/LoadModule dir_module/s/^#//g' \
     -e '/LoadModule mime_module/s/^#//g' \
@@ -29,7 +35,6 @@ RUN sed -i \
     /usr/local/apache2/conf/httpd.conf
 
 # Copiar la configuración personalizada de Apache
-COPY apache-config.conf /usr/local/apache2/conf/httpd.conf
 
 # Exponer los puertos HTTP y HTTPS
 EXPOSE 80 443
