@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: php
-          image: php:8.2-fpm  # Usar imagen de PHP-FPM
+          image: ferminromero00/php:latest
           ports:
             - containerPort: 9000  # Puerto de PHP-FPM
           volumeMounts:

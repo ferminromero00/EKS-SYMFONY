@@ -1,16 +1,28 @@
-# Usar imagen base de Apache
+# Usar la imagen base oficial de Apache
 FROM httpd:latest
 
-# Habilitar mod_rewrite y SSL
-RUN a2enmod rewrite ssl
+# Crear directorio para los certificados SSL
+RUN mkdir -p /usr/local/apache2/conf/ssl/
 
 # Copiar los certificados SSL
-COPY mywall-eks.work.gd.crt /etc/ssl/certs/
-COPY mywall-eks.work.gd.key /etc/ssl/private/
-COPY mywall-eks.work.gd.ca-bundle /etc/ssl/certs/
+COPY mywall-eks.work.gd.crt /usr/local/apache2/conf/ssl/
+COPY mywall-eks.work.gd.key /usr/local/apache2/conf/ssl/
+COPY mywall-eks.work.gd.ca-bundle /usr/local/apache2/conf/ssl/
 
-# Copiar la configuración de Apache
-COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
+# Habilitar mod_rewrite, mod_ssl y mpm_prefork_module en httpd.conf
+RUN sed -i \
+    -e '/LoadModule mpm_prefork_module/s/^#//g' \
+    -e '/LoadModule rewrite_module/s/^#//g' \
+    -e '/LoadModule ssl_module/s/^#//g' \
+    -e '/LoadModule proxy_module/s/^#//g' \
+    -e '/LoadModule proxy_fcgi_module/s/^#//g' \
+    /usr/local/apache2/conf/httpd.conf
 
-# Exponer puertos HTTP y HTTPS
+# Copiar la configuración personalizada de Apache
+COPY apache-config.conf /usr/local/apache2/conf/httpd.conf
+
+# Exponer los puertos HTTP y HTTPS
 EXPOSE 80 443
+
+# Comando por defecto para ejecutar Apache
+CMD ["httpd-foreground"]

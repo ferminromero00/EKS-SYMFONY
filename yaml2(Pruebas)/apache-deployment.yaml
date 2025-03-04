@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: apache
-          image: httpd:latest  # Usar imagen de Apache
+          image: ferminromero00/apache:latest
           ports:
             - containerPort: 80
             - containerPort: 443
