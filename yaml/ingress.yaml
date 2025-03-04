@@ -3,23 +3,21 @@ kind: Ingress
 metadata:
   name: mywall-eks-ingress
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"  # Fuerza HTTPS
 spec:
   ingressClassName: nginx
   rules:
-  - host: mywall-eks.work.gd
+  - host: mywall-eks.work.gd                         # Dominio
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: php-apache-service
+            name: php-apache-service                  # Servicio destino
             port:
               number: 80
-  tls:
+  tls:                                               # Configuración SSL
   - hosts:
     - mywall-eks.work.gd
     secretName: mywall-eks-tls
-
-# kubectl apply -f ingress.yaml

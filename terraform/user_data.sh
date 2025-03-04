@@ -38,4 +38,4 @@ curl https://api.dnsexit.com/dns/ud/?apikey=I2pljh2r7G5J7ShzFLS9P3ieEVUyyC -d ho
 
 # Ejecutar el contenedor con las variables de entorno correctas
 # sudo docker run -d -p 80:80 -e APP_ENV=prod -e APP_DEBUG=0 --name mywall_container ferminromero00/mywall:latest
-# sudo docker run -d -p 80:80 -p 443:443 -e APP_ENV=prod -e APP_DEBUG=0 --name mywall_container mywall-php:latest
+# sudo docker run -d -p 80:80 -p 443:443 -e APP_ENV=prod -e APP_DEBUG=0 --name mywall_container ferminromero00/mywall:latest

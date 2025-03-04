@@ -4,10 +4,8 @@ metadata:
   name: efs-pvc
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteMany           # Permite múltiples lecturas/escrituras
   storageClassName: efs-sc
   resources:
     requests:
-      storage: 5Gi
-
-# kubectl apply -f efs-pvc.yaml
+      storage: 5Gi           # Solicita 5GB de almacenamiento

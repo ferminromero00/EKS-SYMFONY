@@ -8,10 +8,8 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
+  persistentVolumeReclaimPolicy: Retain  # Mantiene datos después de borrar PVC
   storageClassName: efs-sc
   csi:
     driver: efs.csi.aws.com
-    volumeHandle: fs-0f60c3f1769b8df53 
-
-# kubectl apply -f efs-pv.yaml
+    volumeHandle: fs-0f60c3f1769b8df53  # ID del EFS en AWS

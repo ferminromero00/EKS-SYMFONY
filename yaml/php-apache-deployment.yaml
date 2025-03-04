@@ -3,10 +3,10 @@ kind: Deployment
 metadata:
   name: php-apache
 spec:
-  replicas: 1
+  replicas: 1                    # Número de pods
   selector:
     matchLabels:
-      app: php-apache
+      app: php-apache           # Selector para identificar pods
   template:
     metadata:
       labels:
@@ -19,10 +19,8 @@ spec:
         - containerPort: 80
         volumeMounts:
         - name: efs-storage
-          mountPath: /var/www/html  # Se monta el EFS aquí
+          mountPath: /var/www/html  # Monta EFS en esta ruta
       volumes:
       - name: efs-storage
         persistentVolumeClaim:
-          claimName: efs-pvc
-
-# kubectl apply -f php-apache-deployment.yaml
+          claimName: efs-pvc        # Usa el PVC definido
