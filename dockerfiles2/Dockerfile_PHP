@@ -1,0 +1,22 @@
+FROM php:8.2-fpm
+
+# Instalar las dependencias necesarias de PHP
+RUN apt-get update && apt-get install -y \
+    libicu-dev \
+    libpq-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    && docker-php-ext-install intl pdo pdo_mysql opcache \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar los archivos de la aplicación
+COPY . /var/www/html/
+
+# Establecer el directorio de trabajo
+WORKDIR /var/www/html
+
+# Configurar permisos
+RUN chmod -R 755 /var/www/html

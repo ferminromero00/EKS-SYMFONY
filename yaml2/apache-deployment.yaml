@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      containers:
+        - name: apache
+          image: httpd:latest  # Usar imagen de Apache
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - name: efs-storage
+              mountPath: /var/www/html  # Montamos EFS aquí
+          env:
+            - name: PHP_HOST
+              value: "php-service"  # Nombre del servicio de PHP
+      volumes:
+        - name: efs-storage
+          persistentVolumeClaim:
+            claimName: efs-pvc  # PVC para montar el volumen EFS
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apache-service
+spec:
+  selector:
+    app: apache
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+    - protocol: TCP
+      port: 443
+      targetPort: 443
