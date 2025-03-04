@@ -16,4 +16,4 @@ spec:
   selector:
     app: php-apache
 
-    # kubectl apply -f php-apache-service.yaml
+    # kubectl apply -f php-apache-loadbalancer.yaml
