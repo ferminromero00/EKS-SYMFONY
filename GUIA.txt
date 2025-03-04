@@ -1,0 +1,54 @@
+--------------------------------------------------------------------
+EFS
+
+Crear EFS con VPC_PRINCIPAL y cambiar accesos a grupo_seguridad_servidor
+Con este comando en Attach (Mount via IP), lo ponemos en nuestra maquina
+(tarda un poco)
+
+cp -rpv /var/EKS-SYMFONY/MyWall/. efs/
+
+find . -name ".env"
+find . -name "vendor"
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+EKS 
+
+nano ~/.aws/credentials
+nano ~/.aws/config
+
+# Ver si lo encuentra
+eksctl get cluster
+
+#Ver status del cluster
+aws eks update-kubeconfig --name mywalleks --region us-east-1
+
+# Ver nodos
+kubectl get nodes
+
+kubectl get pods
+kubectl get svc
+
+# ID efs
+aws efs describe-file-systems --query "FileSystems[*].FileSystemId" --output text
+
+#Instalamos driver necesario para EFS
+kubectl apply -k "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-1.4"
+
+kubectl exec -it php-apache-55d99fc54b-nqj2h -- /bin/bash
+
+composer install --no-dev --optimize-autoloader
+
+mkdir -p /var/www/html/var/cache/prod
+mkdir -p /var/www/html/var/log
+chmod -R 777 /var/www/html/var/cache
+chmod -R 777 /var/www/html/var/log
+chown -R root:root /var/www/html/var
+
+# Pâra comprobar si el loadBalancer funciona
+for i in {1..10}; do curl -s -w "%{remote_ip}\n" -o /dev/null http://www.mywall-eks.work.gd./ ; done
+
+kubectl run test-pod --image=busybox --restart=Never --rm -it -- /bin/sh
+wget -qO- http://172.20.231.111
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
