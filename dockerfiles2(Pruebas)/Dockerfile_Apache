@@ -1,8 +1,13 @@
 # Usar la imagen base oficial de Apache
 FROM httpd:latest
 
-# Crear directorio para los certificados SSL
+# Crear directorios necesarios
 RUN mkdir -p /usr/local/apache2/conf/ssl/
+RUN mkdir -p /var/www/html
+
+# Establecer permisos correctos
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 755 /var/www/html
 
 # Copiar los certificados SSL
 COPY mywall-eks.work.gd.crt /usr/local/apache2/conf/ssl/
@@ -16,6 +21,11 @@ RUN sed -i \
     -e '/LoadModule ssl_module/s/^#//g' \
     -e '/LoadModule proxy_module/s/^#//g' \
     -e '/LoadModule proxy_fcgi_module/s/^#//g' \
+    -e '/LoadModule authz_core_module/s/^#//g' \
+    -e '/LoadModule authz_host_module/s/^#//g' \
+    -e '/LoadModule dir_module/s/^#//g' \
+    -e '/LoadModule mime_module/s/^#//g' \
+    -e '/LoadModule log_config_module/s/^#//g' \
     /usr/local/apache2/conf/httpd.conf
 
 # Copiar la configuración personalizada de Apache
