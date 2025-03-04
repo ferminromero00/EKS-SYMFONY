@@ -11,6 +11,7 @@ sudo git clone https://github.com/ferminromero00/EKS-SYMFONY.git
 
 sudo mv EKS-SYMFONY/dockerfiles/Dockerfile_Mywall EKS-SYMFONY/MyWall
 sudo mv EKS-SYMFONY/Certificates/* EKS-SYMFONY/MyWall/
+sudo mv EKS-SYMFONY/dockerfiles2/* EKS-SYMFONY/MyWall/
 
 # Instalar Docker
 sudo dnf install -y docker
